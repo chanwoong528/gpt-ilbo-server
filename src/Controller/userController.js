@@ -1,5 +1,5 @@
 const express = require("express");
-const { createAdmin, getAdminList } = require("../Service/userService");
+const { createAdmin, getAdminList, patchUserActive } = require("../Service/userService");
 
 
 const router = new express.Router();
@@ -11,7 +11,9 @@ router.post("/", (req, res) => {
 router.get("/", (req, res) => {
   getAdminList(req, res)
 })
-
+router.patch("/", (req, res) => {
+  patchUserActive(req, res)
+})
 
 
 

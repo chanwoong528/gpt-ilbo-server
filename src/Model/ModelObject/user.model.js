@@ -23,6 +23,11 @@ module.exports = (sequelize, Sequelize) => {
       require: true,
       default: "user"
     },
+    active: {
+      type: Sequelize.BOOLEAN,
+      require: true,
+      defaultValue: false
+    },
     verified: {
       type: Sequelize.BOOLEAN,
       require: true,

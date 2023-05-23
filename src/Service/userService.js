@@ -51,8 +51,22 @@ exports.getAdminList = (req, res) => {
       code: 400,
     })
   })
+}
 
+exports.patchUserActive = (req, res) => {
 
-
+  User.update({ active: req.body.toggleData.active }, { where: { id: req.body.toggleData.userId } })
+    .then((userUpdateData) => {
+      return res.status(200).send({
+        message: 'updated user active',
+        code: 204,
+      })
+    }).catch((err) => {
+      console.warn("User.patchUserActive[error]: ", err)
+      return res.status(400).send({
+        message: 'Something Wrong with Server',
+        code: 400,
+      })
+    })
 }
 
