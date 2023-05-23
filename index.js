@@ -8,14 +8,18 @@ const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5002
-
 const db = require("./src/Model");
+
+const userController = require("./src/Controller/userController");
+
+
 
 
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "http://localhost:5173",
     ],
     credentials: true,
     methods: ["HEAD", "POST", "PUT", "GET", "PATCH", "DELETE"],
@@ -26,6 +30,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 // ** Controllers
+app.use("/user", userController)
 
 // ** Controllers
 // ** DB 
