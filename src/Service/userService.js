@@ -1,14 +1,14 @@
 require('dotenv').config()
-const db = require("../Model")
-const User = db.user;
-const jwt = require('jsonwebtoken')
+const { generateTokens } = require("../Util/TokenGen")
+
 const bcrypt = require('bcrypt')
 const saltRounds = process.env.BCRYPT_SALT_ROUND
-const compareText = process.env.BCRYPT_COMPARE_TEXT
-const jwtSecret = process.env.JWT_SECRET
+const db = require("../Model")
+const User = db.user;
 
 
-exports.createAdmin = (req, res) => {
+
+exports.postCreateAdmin = (req, res) => {
   let password = req.body.userData.pw ? req.body.userData.pw : "1234"
   const hashedPw = bcrypt.hash(password, parseInt(saltRounds), function (err, hash) {
     if (err) {
@@ -54,7 +54,6 @@ exports.getAdminList = (req, res) => {
 }
 
 exports.patchUserActive = (req, res) => {
-
   User.update({ active: req.body.toggleData.active }, { where: { id: req.body.toggleData.userId } })
     .then((userUpdateData) => {
       return res.status(200).send({
@@ -69,4 +68,43 @@ exports.patchUserActive = (req, res) => {
       })
     })
 }
+exports.postLoginUser = (req, res) => {
+  let userInfo = req.body.userData;
+  console.log(req.body)
+  User.findOne({ where: { email: userInfo.email } }).then((userData) => {
+    if (!userData) {
+      return res.status(404).send({
+        message: 'User does not exist.',
+        code: 404,
+      })
+    } else {
+      const comparePW = bcrypt.compare(userInfo.pw, userData.password).then((compareFlag) => {
+
+        if (!!compareFlag) {
+          let tokenData = generateTokens(userData);
+          let userLoginData = {
+            id: userData.id,
+            email: userData.email,
+            name: userData.name,
+            ...tokenData
+          }
+          return res.status(200).send({
+            message: 'Login Successful',
+            code: 200,
+            data: userLoginData
+          })
+          //generate login Token
+
+        } else {
+          return res.status(401).send({
+            message: 'User information is Wrong',
+            code: 401,
+          })
+        }
+      });
+
+    }
+  })
+}
+
 
