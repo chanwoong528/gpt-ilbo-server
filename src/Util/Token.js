@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 const jwtSecret = process.env.JWT_SECRET
 
 function generateTokens(userData) {
-  console.log("######  ", userData.id)
   let accessToken = jwt.sign(
     {
       data: userData.id,
@@ -20,5 +19,10 @@ function generateTokens(userData) {
   )
   return { accessToken, refreshToken }
 }
+function decodeToken(token) {
+  let decoded = jwt.verify(token, jwtSecret);
+  return decoded.data;
+}
 
-module.exports = { generateTokens }
+
+module.exports = { generateTokens, decodeToken }

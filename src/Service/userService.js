@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { generateTokens } = require("../Util/TokenGen")
+const { generateTokens, decodeToken } = require("../Util/Token")
 
 const bcrypt = require('bcrypt')
 const saltRounds = process.env.BCRYPT_SALT_ROUND
@@ -38,7 +38,12 @@ exports.postCreateAdmin = (req, res) => {
 }
 
 exports.getAdminList = (req, res) => {
-  User.findAll({ exclude: ['password'] }).then((userListData) => {
+  User.findAll({
+    attributes: { exclude: ['password'] },
+    order: [
+      ["createdAt", "desc"]
+    ],
+  }).then((userListData) => {
     return res.status(200).send({
       message: 'user list responded',
       code: 200,
@@ -70,7 +75,6 @@ exports.patchUserActive = (req, res) => {
 }
 exports.postLoginUser = (req, res) => {
   let userInfo = req.body.userData;
-  console.log(req.body)
   User.findOne({ where: { email: userInfo.email } }).then((userData) => {
     if (!userData) {
       return res.status(404).send({
@@ -79,7 +83,6 @@ exports.postLoginUser = (req, res) => {
       })
     } else {
       const comparePW = bcrypt.compare(userInfo.pw, userData.password).then((compareFlag) => {
-
         if (!!compareFlag) {
           let tokenData = generateTokens(userData);
           let userLoginData = {
@@ -93,8 +96,6 @@ exports.postLoginUser = (req, res) => {
             code: 200,
             data: userLoginData
           })
-          //generate login Token
-
         } else {
           return res.status(401).send({
             message: 'User information is Wrong',
@@ -106,5 +107,41 @@ exports.postLoginUser = (req, res) => {
     }
   })
 }
+exports.getLoginStatus = (req, res) => {
+  let decodedData = decodeToken(req.query.token)
+  console.log("decoded Data : ", decodedData)
+  if (!decodedData) {
+    console.log("login again ")
+    return res.status(401).send({
+      message: 'Login expired.',
+      code: 401,
+    })
+  } else {
+    User.findOne({
+      attributes: { exclude: ['password'] },
+      where: { id: decodedData }
+    }).then((userData) => {
+      if (!!userData) {
+        let newTokens = generateTokens(userData);
+        let userLoginData = {
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          ...newTokens
+        }
+        return res.status(200).send({
+          message: 'Login Successful',
+          code: 200,
+          data: userLoginData
+        })
+      } else {
+        return res.status(404).send({
+          message: 'Token Error.',
+          code: 404,
+        })
+      }
+    })
+  }
 
+}
 
