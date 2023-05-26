@@ -112,7 +112,7 @@ exports.getLoginStatus = (req, res) => {
   console.log("decoded Data : ", decodedData)
   if (!decodedData) {
     console.log("login again ")
-    return res.status(401).send({
+    return res.status(200).send({
       message: 'Login expired.',
       code: 401,
     })
@@ -135,7 +135,7 @@ exports.getLoginStatus = (req, res) => {
           data: userLoginData
         })
       } else {
-        return res.status(404).send({
+        return res.status(200).send({
           message: 'Token Error.',
           code: 404,
         })

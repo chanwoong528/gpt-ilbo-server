@@ -22,6 +22,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
+      "https://gptilbo-admin.netlify.app/"
     ],
     credentials: true,
     methods: ["HEAD", "POST", "PUT", "GET", "PATCH", "DELETE"],

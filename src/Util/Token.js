@@ -20,8 +20,13 @@ function generateTokens(userData) {
   return { accessToken, refreshToken }
 }
 function decodeToken(token) {
-  let decoded = jwt.verify(token, jwtSecret);
-  return decoded.data;
+  try {
+    let decoded = jwt.verify(token, jwtSecret);
+    return decoded.data;
+  } catch (error) {
+    return undefined;
+  }
+
 }
 
 
