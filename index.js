@@ -4,6 +4,8 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+
+
 const app = express();
 const PORT = process.env.PORT || 5002
 const db = require("./src/Model");
@@ -13,8 +15,10 @@ const { swaggerUi, specs } = require("./config/swagger.config.js");
 /*Controllers  ************************ */
 const userController = require("./src/Controller/userController");
 const authController = require("./src/Controller/authController");
-/*Controllers  ************************ */
+const gptController = require("./src/Controller/gptController");
 
+
+/*Controllers  ************************ */
 
 
 app.use(
@@ -36,6 +40,7 @@ app.use(cookieParser());
 // ** Controllers ************************
 app.use("/user", userController)
 app.use("/auth", authController)
+app.use("/gpt", gptController);
 // ** Controllers **************************
 
 

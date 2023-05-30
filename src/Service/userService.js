@@ -1,11 +1,11 @@
 require('dotenv').config()
-const { generateTokens, decodeToken } = require("../Util/Token")
-
 const bcrypt = require('bcrypt')
+
+const { generateTokens, decodeToken } = require("../Util/Token")
 const saltRounds = process.env.BCRYPT_SALT_ROUND
+
 const db = require("../Model")
 const User = db.user;
-
 
 
 exports.postCreateAdmin = (req, res) => {
@@ -73,6 +73,12 @@ exports.patchUserActive = (req, res) => {
       })
     })
 }
+exports.patchUserPassword = (req, res) => {
+  let userInfo = req.body.userData;
+
+}
+
+
 exports.postLoginUser = (req, res) => {
   let userInfo = req.body.userData;
   User.findOne({ where: { email: userInfo.email } }).then((userData) => {
