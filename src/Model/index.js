@@ -24,6 +24,7 @@ db.sequelize = sequelize;
 
 db.article = require("./ModelObject/article.model.js")(sequelize, Sequelize);
 db.user = require("./ModelObject/user.model.js")(sequelize, Sequelize);
+db.category = require("./ModelObject/category.model.js")(sequelize, Sequelize);
 
 
 

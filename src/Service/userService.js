@@ -77,8 +77,6 @@ exports.patchUserPassword = (req, res) => {
   let userInfo = req.body.userData;
 
 }
-
-
 exports.postLoginUser = (req, res) => {
   let userInfo = req.body.userData;
   User.findOne({ where: { email: userInfo.email } }).then((userData) => {

@@ -4,22 +4,15 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-
-
 const app = express();
 const PORT = process.env.PORT || 5002
 const db = require("./src/Model");
 const { swaggerUi, specs } = require("./config/swagger.config.js");
 
-
-/*Controllers  ************************ */
 const userController = require("./src/Controller/userController");
 const authController = require("./src/Controller/authController");
 const gptController = require("./src/Controller/gptController");
-
-
-/*Controllers  ************************ */
-
+const cateController = require("./src/Controller/cateController")
 
 app.use(
   cors({
@@ -41,18 +34,23 @@ app.use(cookieParser());
 app.use("/user", userController)
 app.use("/auth", authController)
 app.use("/gpt", gptController);
+app.use("/category", cateController);
 // ** Controllers **************************
 
-
+// ** Swagger
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(specs))
-// ** DB 
-db.sequelize.sync().then(() => {
-  console.log("db connected");
-}).catch((error) => {
-  console.warn("db connection Error: ", error)
-})
-// ** DB 
+// ** Swagger
+
+// DB Connection
+db.sequelize.sync()
+  .then(() => {
+    console.log("db connected");
+  }).catch((error) => {
+    console.warn("db connection Error: ", error)
+  })
+// DB Connection
+
 //Server Up
 app.listen(PORT, (err) => {
   if (err) {
